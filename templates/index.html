@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Price Predictions</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            animation: slideIn 0.5s ease-out, pulse 2s infinite;
+        }
+
+        .table-container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        table tr:nth-child(even) {
+            background-color: rgba(242, 242, 242, 0.5);
+        }
+
+        table tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        table td {
+            transition: all 0.3s ease;
+        }
+
+        .refresh-timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(46, 204, 113, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                width: 95%;
+            }
+
+            table th, table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Price Predictions</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Departure</th>
+                    <th>Destination</th>
+                    <th>Day of Week</th>
+                    <th>Time</th>
+                    <th>Days Left</th>
+                    <th>Predicted Price</th>
+                </tr>
+            </thead>
+            <tbody id="predictions-body">
+                {% for prediction in predictions %}
+                <tr>
+                    <td>{{ prediction.Index }}</td>
+                    <td>{{ prediction.Departure }}</td>
+                    <td>{{ prediction.Destination }}</td>
+                    <td>{{ prediction.DayOfWeek }}</td>
+                    <td>{{ prediction.Time }}</td>
+                    <td>{{ prediction.Days_left }}</td>
+                    <td>{{ prediction.Predict_Price }} USD</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="refresh-timer" id="refresh-timer">Refreshing in 5s</div>
+
+    <script>
+        // Animate rows on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('#predictions-body tr');
+            rows.forEach((row, index) => {
+                row.style.animation = `fadeIn 0.5s ease-out ${index * 0.1}s`;
+            });
+        });
+
+        // Refresh countdown
+        let timeLeft = 5;
+        const timerElement = document.getElementById('refresh-timer');
+        const countdownTimer = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = `Refreshing in ${timeLeft}s`;
+            if (timeLeft <= 0) {
+                clearInterval(countdownTimer);
+                location.reload();
+            }
+        }, 1000);
+
+        // Highlight changing prices on refresh
+        if (performance.navigation.type === 1) { // Check if it's a refresh
+            const rows = document.querySelectorAll('#predictions-body tr');
+            rows.forEach(row => {
+                const priceCell = row.lastElementChild;
+                const currentPrice = parseFloat(priceCell.textContent);
+                const previousPrice = parseFloat(localStorage.getItem(`price-${row.firstElementChild.textContent}`)) || currentPrice;
+                
+                if (currentPrice > previousPrice) {
+                    priceCell.style.color = '#e74c3c';
+                    priceCell.style.fontWeight = 'bold';
+                } else if (currentPrice < previousPrice) {
+                    priceCell.style.color = '#2ecc71';
+                    priceCell.style.fontWeight = 'bold';
+                }
+                
+                localStorage.setItem(`price-${row.firstElementChild.textContent}`, currentPrice);
+            });
+        }
+    </script>
+</body>
+</html>
+

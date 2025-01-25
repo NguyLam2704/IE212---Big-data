@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chờ Kết Quả</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #888;
+        }
+    </style>
+    <!-- <script type="text/javascript">
+        let timeout = false;
+
+        // Set a timeout to force redirect after 5 seconds
+        setTimeout(() => {
+            timeout = true;
+            window.location.href = "/results"; // Redirect to results.html
+        }, 5000);
+
+        // Poll the server for prediction status
+        async function checkPrediction() {
+            if (timeout) return;
+
+            try {
+                const response = await fetch('/check_prediction');
+                const data = await response.json();
+
+                if (data.status === "ready") {
+                    // Redirect to results with prediction data
+                    window.location.href = "/results";
+                } else {
+                    // Keep polling if status is "waiting"
+                    setTimeout(checkPrediction, 1000); // Poll every 1 second
+                }
+            } catch (error) {
+                console.error("Error checking prediction:", error);
+                // Retry on error
+                setTimeout(checkPrediction, 1000);
+            }
+        }
+
+        // Start polling
+        checkPrediction();
+    </script> -->
+</head>
+<body>
+    <div class="container">
+        <h1>Đang chờ kết quả...</h1>
+        <div class="spinner"></div>
+        <p>Vui lòng chờ trong giây lát, hệ thống đang xử lý yêu cầu của bạn.</p>
+        <div class="message">Kết quả sẽ xuất hiện ngay khi có sẵn.</div>
+    </div>
+</body>
+</html>

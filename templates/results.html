@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Price Prediction Results</title>
+</head>
+<body>
+    <h1>Flight Price Prediction Results</h1>
+    
+    {% if predictions %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Airline</th>
+                    <th>Departure City</th>
+                    <th>Arrival City</th>
+                    <th>Number of Stops</th>
+                    <th>Predicted Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in predictions %}
+                    <tr>
+                        <td>{{ result.Airline }}</td>
+                        <td>{{ result.departure_city }}</td>
+                        <td>{{ result.arrival_city }}</td>
+                        <td>{{ result.number_of_stops }}</td>
+                        <td>{{ result.predicted_price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No predictions available yet.</p>
+    {% endif %}
+</body>
+</html>
